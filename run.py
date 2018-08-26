@@ -33,10 +33,8 @@ def dir_sepconv(input_dir, output_dir, loss_func=None, sepconv_sh=None):
         dst_name = get_dst_name(src_names_wo_ext[idx-1], src_exts[idx-1], src_names_wo_ext[idx], src_exts[idx])
         logger.debug(loss_function+'('+input_dir+'/'+src_names[idx-1]+', '+input_dir+'/'+src_names[idx]+') -> '
                      +output_dir+'/'+dst_name)
-        # exec_sepconv(input_dir+'/'+src_names[idx-1], input_dir+'/'+src_names[idx],
-        #              output_dir+'/'+dst_name, loss_function)
-        exec_sepconv_dummy(input_dir+'/'+src_names[idx-1], input_dir+'/'+src_names[idx],
-                           output_dir+'/'+dst_name, loss_function)
+        exec_sepconv(input_dir+'/'+src_names[idx-1], input_dir+'/'+src_names[idx],
+                     output_dir+'/'+dst_name, loss_function)
 
     if input_dir != output_dir:
         logger.info('copy: '+input_dir+' ->'+output_dir)
@@ -63,10 +61,6 @@ def rename_seq(target_dir, digits=8, start=1):
     [shutil.move(target_dir+'/'+src, target_dir+'/'+dst) for src, dst in zip(reversed_src_names, reversed_dst_names)]
 
     return target_dir
-
-
-def exec_sepconv_dummy(input1, input2, output, loss_func='lf', sepconv_sh='./sepconv.sh'):
-    shutil.copy2(input1, output)
 
 
 def exec_sepconv(input1, input2, output, loss_func='lf', sepconv_sh='./sepconv.sh'):
