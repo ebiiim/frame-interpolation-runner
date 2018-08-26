@@ -6,7 +6,11 @@ logger = getLogger(__name__)
 
 
 def get_filenames(target_dir):
-    f_names = os.listdir(target_dir)  # ['00000001.png', '00000002.png', ...]
+    cmd = 'ls ' + target_dir
+    out = subprocess.check_output(cmd.split()).decode('utf-8')
+    f_names = out.split()
+    # WARNING: os.listdir()は順番を保証しない
+    # f_names = os.listdir(target_dir)  # ['00000001.png', '00000002.png', ...]
     f_names_wo_ext = ['.'.join(fn.split('.')[:-1]) for fn in f_names]  # ['00000001', '00000002', ...]
     f_exts = ['.' + str(fn.split('.')[-1]) for fn in f_names]  # ['.png', '.png', ...]
     return f_names, f_names_wo_ext, f_exts
@@ -34,7 +38,7 @@ def dir_sepconv(input_dir, output_dir, loss_func=None, sepconv_sh=None):
         logger.debug(loss_function+'('+input_dir+'/'+src_names[idx-1]+', '+input_dir+'/'+src_names[idx]+') -> '
                      +output_dir+'/'+dst_name)
         exec_sepconv(input_dir+'/'+src_names[idx-1], input_dir+'/'+src_names[idx],
-                     output_dir+'/'+dst_name, loss_function)
+                     output_dir+'/'+dst_name, loss_func, sepconv_sh)
 
     if input_dir != output_dir:
         logger.info('copy: '+input_dir+' ->'+output_dir)
@@ -54,7 +58,8 @@ def rename_seq(target_dir, digits=8, start=1):
     reversed_dst_names = []
     for idx in range(len(src_names))[::-1]:
         num = idx+start
-        dst_name = '{:08g}'.format(num)+src_exts[idx]
+        fmt_str = '{:0'+str(digits)+'g}'
+        dst_name = fmt_str.format(num)+src_exts[idx]
         reversed_dst_names.append(dst_name)
     [logger.debug('rename: '+target_dir+'/'+src+' -> '+target_dir+'/'+dst)
      for src, dst in zip(reversed_src_names, reversed_dst_names)]
@@ -64,7 +69,7 @@ def rename_seq(target_dir, digits=8, start=1):
 
 
 def exec_sepconv(input1, input2, output, loss_func='lf', sepconv_sh='./sepconv.sh'):
-    cmd_sepconv = [sepconv_sh, input1, input2, output, loss_func]
+    cmd_sepconv = [sepconv_sh, '--model', loss_func, '--first', input1, '--second', input2, '--out', output]
     # logging
     stdout = subprocess.DEVNULL
     if logger.getEffectiveLevel() == 10:  # DEBUG
@@ -88,4 +93,4 @@ if __name__ == '__main__':
     loss_function = 'lf'  # 'lf' or 'l1'
 
     dir_sepconv(input_directory, output_directory, loss_function)
-    rename_seq(output_directory, start=1)
+    rename_seq(output_directory, digits=8, start=1)
