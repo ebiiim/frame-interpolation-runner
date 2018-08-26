@@ -68,10 +68,17 @@ def rename_seq(target_dir, digits=8, start=1):
     return target_dir
 
 
+def copy_last_frame(target_dir, digits=8):
+    src_names, src_names_wo_ext, src_exts = get_filenames(target_dir)
+    src_file = target_dir + '/' + src_names[-1]
+    fmt_str = '{:0' + str(digits) + 'g}'
+    dst_file = target_dir + '/' + fmt_str.format(int(src_names_wo_ext[-1])+1) + src_exts[-1]
+    shutil.copy2(src_file, dst_file)
+
+
 def exec_sepconv(input1, input2, output, loss_func, sepconv_sh):
     cmd_sepconv = [sepconv_sh, input1, input2, output, loss_func]
     # logging
-
     stdout = subprocess.DEVNULL
     if logger.getEffectiveLevel() == 10:  # DEBUG
         stdout = None
@@ -95,3 +102,4 @@ if __name__ == '__main__':
 
     dir_sepconv(input_directory, output_directory, loss_function)
     rename_seq(output_directory, digits=8, start=1)
+    copy_last_frame(output_directory)
