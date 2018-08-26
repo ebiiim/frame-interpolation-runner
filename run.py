@@ -69,14 +69,15 @@ def rename_seq(target_dir, digits=8, start=1):
 
 
 def exec_sepconv(input1, input2, output, loss_func, sepconv_sh):
-    cmd_sepconv = [sepconv_sh, '--model', loss_func, '--first', input1, '--second', input2, '--out', output]
+    cmd_sepconv = [sepconv_sh, input1, input2, output, loss_func]
     # logging
+
     stdout = subprocess.DEVNULL
     if logger.getEffectiveLevel() == 10:  # DEBUG
         stdout = None
     # run cmd
     # logger.debug(' '.join(cmd_sepconv))
-    subprocess.run(' '.join(cmd_sepconv), stdout=stdout)
+    subprocess.run(cmd_sepconv, stdout=stdout)
 
 
 if __name__ == '__main__':
