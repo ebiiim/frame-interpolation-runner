@@ -16,7 +16,7 @@ def get_filenames(target_dir):
     return f_names, f_names_wo_ext, f_exts
 
 
-def dir_sepconv(input_dir, output_dir, loss_func=None, sepconv_sh=None):
+def dir_sepconv(input_dir, output_dir, loss_func='lf', sepconv_sh='./sepconv.sh'):
     def get_dst_name(input1_name, input1_ext, input2_name, input2_ext=None, delimiter='z'):
         return input1_name+delimiter+input2_name+input1_ext
 
@@ -68,7 +68,7 @@ def rename_seq(target_dir, digits=8, start=1):
     return target_dir
 
 
-def exec_sepconv(input1, input2, output, loss_func='lf', sepconv_sh='./sepconv.sh'):
+def exec_sepconv(input1, input2, output, loss_func, sepconv_sh):
     cmd_sepconv = [sepconv_sh, '--model', loss_func, '--first', input1, '--second', input2, '--out', output]
     # logging
     stdout = subprocess.DEVNULL
