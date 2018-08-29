@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 import shutil
 from logging import getLogger
@@ -96,9 +97,16 @@ if __name__ == '__main__':
     logging.basicConfig(format=LOG_FMT, level=LOG_LEVEL)
 
     # 処理対象設定
-    input_directory = './input'
-    output_directory = './output'
-    loss_function = 'lf'  # 'lf' or 'l1'
+    if len(sys.argv) < 4:
+        usage_str = 'Usage: python run.py [INPUT_DIR] [OUTPUT_DIR] [LOSS_FUNC]\n' \
+                    '    [LOSS_FUNC] l1 or lf\n' \
+                    'Example: python run.py ./input ./output l1'
+        print(usage_str)
+        sys.exit(0)
+
+    input_directory = sys.argv[1]
+    output_directory = sys.argv[2]
+    loss_function = sys.argv[3]
 
     dir_sepconv(input_directory, output_directory, loss_function)
     rename_seq(output_directory, digits=8, start=1)
