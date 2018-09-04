@@ -7,11 +7,8 @@ logger = getLogger(__name__)
 
 
 def get_filenames(target_dir):
-    cmd = 'ls ' + target_dir
-    out = subprocess.check_output(cmd.split()).decode('utf-8')
-    f_names = out.split()
-    # WARNING: os.listdir()は順番を保証しない
-    # f_names = os.listdir(target_dir)  # ['00000001.png', '00000002.png', ...]
+    f_names = os.listdir(target_dir)  # ['00000001.png', '00000002.png', ...]
+    f_names.sort()
     f_names_wo_ext = ['.'.join(fn.split('.')[:-1]) for fn in f_names]  # ['00000001', '00000002', ...]
     f_exts = ['.' + str(fn.split('.')[-1]) for fn in f_names]  # ['.png', '.png', ...]
     return f_names, f_names_wo_ext, f_exts
