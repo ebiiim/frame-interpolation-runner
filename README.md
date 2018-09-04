@@ -10,7 +10,7 @@ python run.py ./input ./output l1
 
 - 第1引数は入力ディレクトリ e.g. `./input` 
     - 連番のpngを想定 e.g. `00000001.png` `00000002.png`
-    - 上記以外でも`ls`で正しい順序に並べばOK
+    - 上記以外でも昇順なら動くはずです（`os.listdir()` -> `list.sort()`しています）
 - 第2引数は出力ディレクトリ e.g. `./output`
     - 連番のpngを出力します
 - 第3引数はpytorch-sepconvのLoss Function `l1` or `lf`
